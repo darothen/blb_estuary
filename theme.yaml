@@ -1,0 +1,5 @@
+attrs:
+    Figure:
+        plot_width: 900
+        plot_height: 260
+        min_border: 0
