@@ -2,7 +2,7 @@
 """ Quick run Estuary model """
 
 import matplotlib.pyplot as plt
-from estuary import EstuaryModel, basic_tidal_flow, quick_plot
+from app.estuary import EstuaryModel, basic_tidal_flow, quick_plot
 
 model = EstuaryModel(1e9, 35., 20., 231.2,
                      #tide_func=basic_tidal_flow,
