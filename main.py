@@ -24,6 +24,10 @@ colors = [
 tools = "xwheel_zoom,xpan,reset"
 day_range = Range1d(0, model_run_kwargs['t_end']/24.)
 
+# Hardcoded constants
+SPINUP_DAYS = 2
+HYPO_THRESH = 60.
+
 
 def get_timestep_index():
     t_end, dt = model_run_kwargs['t_end'], model_run_kwargs['dt']
@@ -81,6 +85,10 @@ bot.line('day', 'O', source=source,
 bot.y_range = Range1d(0., 1000)
 bot.yaxis.axis_label = "Oxygen (µmol/L)"
 
+# Hypoxic criteria line
+bot.line([SPINUP_DAYS, day_range.end], [HYPO_THRESH, HYPO_THRESH],
+         color='firebrick', line_width=2, line_dash='dashed')
+
 # Set plot aesthetics
 for p in [top, mid, bot]:
     p.xgrid.grid_line_color = None
@@ -89,7 +97,7 @@ for p in [top, mid, bot]:
     p.xaxis.axis_label = "Day"
 
     # Add spin-up annotation box
-    spin_up_box = BoxAnnotation(plot=p, left=0, right=2,
+    spin_up_box = BoxAnnotation(plot=p, left=0, right=SPINUP_DAYS,
                                 fill_alpha=0.75, fill_color='grey')
     p.renderers.extend([spin_up_box, ])
 
