@@ -15,7 +15,8 @@ from bokeh.plotting import Figure
 
 # Default model settings - can be made accessible to user!
 model_kwargs = dict(V=1e9, z=5., S_ocean=35., N_ocean=20.,
-                    O_ocean=231.2, O_river=231.2)
+                    O_ocean=231.2, O_river=231.2,
+                    S0=35., N0=20., O0=231.2)
 model_run_kwargs = dict(dt=1.0, t_end=24*42.)
 colors = [
     'MediumSeaGreen', 'OrangeRed', 'DarkViolet'
@@ -31,14 +32,18 @@ def get_timestep_index():
 
 # Callback functions for running the model with different settings and
 # plotting results
-def run_model(S0, N0, O0, has_tide, river_flow_rate, N_river, G, P):
+def run_model(has_tide, river_flow_rate, N_river, G, P):
     """ Alias to quickly run the estuary model """
 
     kwargs = copy(model_kwargs)
     kwargs.update(dict(
-        S=S0, N=N0, O=O0, river_flow_rate=river_flow_rate, N_river=N_river,
+        river_flow_rate=river_flow_rate, N_river=N_river,
         G=G, P=P
     ))
+    # Set initial conditions
+    for elem in ['S', 'N', 'O']:
+        kwargs[elem] = kwargs[elem+'0']
+        del kwargs[elem+'0']
     if has_tide:
         kwargs['tide_func'] = basic_tidal_flow
 
@@ -67,14 +72,14 @@ mid = Figure(tools=tools, title=None, x_range=top.x_range,
 mid.line('day', 'N', source=source,
          line_color=colors[1], line_width=3, line_cap='round')
 mid.y_range = Range1d(0., 200.)
-mid.yaxis.axis_label = "Nitrate (mu mol/L)"
+mid.yaxis.axis_label = "Nitrate (µmol/L)"
 
 bot = Figure(tools=tools, title=None, x_range=top.x_range,
              toolbar_location=None)
 bot.line('day', 'O', source=source,
          line_color=colors[2], line_width=3, line_cap='round')
-bot.y_range = Range1d(0., 1000.)
-bot.yaxis.axis_label = "Oxygen (mu mol/L)"
+bot.y_range = Range1d(0., 1000)
+bot.yaxis.axis_label = "Oxygen (µmol/L)"
 
 # Set plot aesthetics
 for p in [top, mid, bot]:
@@ -96,14 +101,13 @@ def update_plots():
     """ Callback function to re-run model with new settings. """
     global results
 
-    S0, N0, O0 = S_init_slider.value, N_init_slider.value, O_init_slider.value
     has_tide = tide_toggle.active
     river_flow_rate = river_flow_slider.value
     N_river = river_N_slider.value
     G = gas_exchange_slider.value
     P = productivity_slider.value
 
-    results = run_model(S0, N0, O0, has_tide, river_flow_rate, N_river, G, P)
+    results = run_model(has_tide, river_flow_rate, N_river, G, P)
 
     source.data['V'] = results['V']
     source.data['S'] = results['S']
@@ -113,8 +117,10 @@ def update_plots():
 
     title_str = "Estuary"
     comps = []
-    if has_tide: comps += ['tides']
-    if river_flow_rate > 0: comps += ['river']
+    if has_tide:
+        comps += ['tides']
+    if river_flow_rate > 0:
+        comps += ['river']
     extra_str = " with " + " and ".join(comps)
     top.title = title_str + extra_str
 
@@ -171,27 +177,21 @@ download_data = CustomJS(args=dict(objArray=source), code="""
 """)
 
 ########################################################################
-
 # Configuration sliders/toggles/buttons
-S_init_slider = Slider(title="Initial S concentration (kg/m3)",
-                       value=35., start=0., end=40., step=0.1)
-N_init_slider = Slider(title="Initial N concentration (mu mol/L)",
-                       value=20., start=0., end=100., step=0.1)
-O_init_slider = Slider(title="Initial O concentration (mu mol/L)",
-                       value=231.2, start=200., end=300., step=0.1)
 
 river_flow_slider = Slider(title="River Flow (volume fraction/day)",
                            value=0.05, start=0., end=0.5, step=0.01)
 river_N_slider = Slider(title="River Nitrate level (mu mol/L)",
                         value=100., start=0., end=200., step=0.1)
 gas_exchange_slider = Slider(title="Gas Exchange Rate (m/day)",
-                             value=3., start=1., end=5., step=0.1)
-productivity_slider = Slider(title="System Productivity (factor)",
-                             value=1., start=0.5, end=2., step=0.1)
+                             value=3, start=1, end=5, step=2)
+productivity_slider = Slider(title="Biological Productivity (factor)",
+                             value=1., start=0.5, end=2., step=0.5)
 
 
 def toggle_callback(attr):
-    if tide_toggle.active: # Checked *after* press
+    if tide_toggle.active:
+        # Checked *after* press
         tide_toggle.label = "Disable tides"
     else:
         tide_toggle.label = "Enable tides"
@@ -204,11 +204,10 @@ go_button = Button(label="Run model")
 go_button.on_click(update_plots)
 
 # Set up app layout
-inits = VBox(S_init_slider, N_init_slider, O_init_slider)
 prods = VBox(gas_exchange_slider, productivity_slider)
 river = VBox(river_flow_slider, river_N_slider)
 tide_run = HBox(tide_toggle, download_button, go_button)
-all_settings = VBox(inits, prods, river, tide_run)
+all_settings = VBox(prods, river, tide_run)
 
 # Add to current document
 curdoc().add_root(HBox(all_settings, plots, width=1400))
