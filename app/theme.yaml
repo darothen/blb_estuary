@@ -1,5 +1,5 @@
 attrs:
     Figure:
-        plot_width: 900
-        plot_height: 260
+        plot_width: 800
+        plot_height: 200
         min_border: 0
