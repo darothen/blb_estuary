@@ -30,6 +30,11 @@ day_range = Range1d(0, model_run_kwargs['t_end']/24.)
 SPINUP_DAYS = 2
 HYPO_THRESH = 60.
 
+# Figure sizes/styling
+figure_style_kws = dict(
+    plot_width=800, plot_height=200, min_border=0,
+)
+
 
 def get_timestep_index():
     t_end, dt = model_run_kwargs['t_end'], model_run_kwargs['dt']
@@ -67,7 +72,8 @@ results = DataFrame({'day': 1, 'S': 0, 'N': 0, 'O': 0, 'V': 1e9},
 source = ColumnDataSource(results)
 
 # Create a new plot and add a renderer
-top = Figure(tools=tools, title=None, x_range=day_range)
+top = Figure(tools=tools, title=None, x_range=day_range,
+             **figure_style_kws)
 top.line('day', 'S', source=source,
          line_color=colors[0], line_width=3, line_cap='round')
 top.y_range = Range1d(0., 40.)
@@ -77,7 +83,7 @@ top.yaxis.axis_label_text_font_size = label_fontsize
 
 
 mid = Figure(tools=tools, title=None, x_range=top.x_range,
-             toolbar_location=None)
+             toolbar_location=None, **figure_style_kws)
 mid.line('day', 'N', source=source,
          line_color=colors[1], line_width=3, line_cap='round')
 mid.y_range = Range1d(0., 200.)
@@ -87,7 +93,7 @@ mid.yaxis.axis_label_text_font_size = label_fontsize
 
 
 bot = Figure(tools=tools, title=None, x_range=top.x_range,
-             toolbar_location=None)
+             toolbar_location=None, **figure_style_kws)
 bot.line('day', 'O', source=source,
          line_color=colors[2], line_width=3, line_cap='round')
 bot.y_range = Range1d(0., 1000)
@@ -112,7 +118,8 @@ for p in [top, mid, bot]:
     p.renderers.extend([spin_up_box, ])
 
 # Generate multi-panel plot and display
-plots = VBox(top, mid, bot, width=800)
+plots = VBox(top, mid, bot,
+             width=int(figure_style_kws['plot_width']*1.2))
 # plots = gridplot([[top,], [mid,], [bot,]])
 
 
@@ -151,7 +158,6 @@ def update_plots():
         mid.y_range = Range1d(0, 1.05*results['N'].max())
     if results['O'].max() > bot.y_range.end:
         bot.y_range = Range1d(0, 1.05*results['O'].max())
-
 
 # Callback using Javascript to download current data as a CSV; note that
 # I've hardcoded in the iteration over objKeys (since I know the number of
@@ -194,15 +200,57 @@ download_data = CustomJS(args=dict(objArray=source), code="""
 
 """)
 
+toggle_ocean = CustomJS(code="""
+    var ocean_group = Snap.select("#ocean_group");
+    toggleVis(ocean_group);
+""")
+
+toggle_river = CustomJS(args=dict(source=source), code="""
+    var flow_rate = cb_obj.get('value');
+    var river_group = Snap.select("#river_group");
+
+    if (flow_rate > 0) {
+        river_group.attr({
+            visibility: 'visible',
+        });
+    } else {
+        river_group.attr({
+            visibility: 'hidden',
+        });
+    }
+""")
+
+toggle_gas = CustomJS(args=dict(source=source), code="""
+    var ex_rate = cb_obj.get('value');
+    var gas_group = Snap.select("#gas_group");
+
+    if (ex_rate > 0) {
+        gas_group.attr({
+            visibility: 'visible',
+        });
+    } else {
+        gas_group.attr({
+            visibility: 'hidden',
+        });
+    }
+""")
+
+check_fish = CustomJS(args=dict(source=source), code="""
+    var data = source.get('data');
+    console.log(data['S'].slice(-1)[0]);
+""")
+
 ########################################################################
 # Configuration sliders/toggles/buttons
 
 river_flow_slider = Slider(title="River Flow (volume fraction/day)",
-                           value=0.05, start=0., end=0.5, step=0.01)
+                           value=0.05, start=0., end=0.5, step=0.01,
+                           callback=toggle_river)
 river_N_slider = Slider(title="River Nitrate level (mu mol/L)",
                         value=100., start=0., end=200., step=0.1)
 gas_exchange_slider = Slider(title="Gas Exchange Rate (m/day)",
-                             value=3, start=1, end=5, step=2)
+                             value=3, start=1, end=5, step=2,
+                             callback=toggle_gas)
 productivity_slider = Slider(title="Productivity (factor)",
                              value=1., start=0.5, end=2., step=0.5)
 
@@ -216,27 +264,27 @@ columns = [
 data_table = DataTable(source=source, columns=columns,
                        width=300, height=600)
 
-
 def toggle_callback(attr):
     if tide_toggle.active:
         # Checked *after* press
-        tide_toggle.label = "Tides on"
+        tide_toggle.label = "Disable Tides"
     else:
-        tide_toggle.label = "Tides off"
-tide_toggle = Toggle(label="Tides off")
+        tide_toggle.label = "Enable Tides"
+tide_toggle = Toggle(label="Enable Tides", callback=toggle_ocean)
 tide_toggle.on_click(toggle_callback)
 
 download_button = Button(label="Download plot data", callback=download_data)
 
-go_button = Button(label="Run model")
+go_button = Button(label="Run model")#, callback=check_fish)
 go_button.on_click(update_plots)
+
 
 # Set up app layout
 prods = VBox(gas_exchange_slider, productivity_slider)
 river = VBox(river_flow_slider, river_N_slider)
 tide_run = HBox(tide_toggle, download_button, go_button)
 all_settings = VBox(prods, river, tide_run,
-                    width=300)
+                    width=600)
 
 # Add to current document
 curdoc().add_root(HBox(children=[all_settings, plots]))
