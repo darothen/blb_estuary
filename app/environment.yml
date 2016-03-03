@@ -1,0 +1,9 @@
+name: blb_estuary
+dependencies:
+  - python=3.4
+  - bokeh
+  - flask
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
