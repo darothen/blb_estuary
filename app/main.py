@@ -246,7 +246,7 @@ check_fish = CustomJS(args=dict(source=source), code="""
 river_flow_slider = Slider(title="River Flow (volume fraction/day)",
                            value=0.05, start=0., end=0.5, step=0.01,
                            callback=toggle_river)
-river_N_slider = Slider(title="River Nitrate level (mu mol/L)",
+river_N_slider = Slider(title="River Nitrate level (µmol/L)",
                         value=100., start=0., end=200., step=0.1)
 gas_exchange_slider = Slider(title="Gas Exchange Rate (m/day)",
                              value=3, start=1, end=5, step=2,

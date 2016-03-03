@@ -131,7 +131,7 @@ function load_fish( state ) {
     });
   } else {
     if ( DEBUG ) console.log("Loading dead fish");
-    Snap.load("/static/fish_healthy.svg", function (f) {
+    Snap.load("/static/fish_dead_scale.svg", function (f) {
         var fish = f.select("#fish");
         estuary.append(fish);
         _fish = fish.attr({ visibility: 'visible' });
@@ -193,7 +193,7 @@ function float() {
    if ( animating ) {
      Snap.animate(0, duration, function( t ) {
         y = y_amp*Math.sin((t/y_per)*2.*Math.PI);
-        translate = "t0," + (y - 60);
+        translate = "t150," + (y + 125);
         _fish.attr({
            transform: translate,
         });
