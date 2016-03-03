@@ -2,6 +2,9 @@
 """ Interactive Estuary model app in Bokeh.
 
 """
+import sys
+sys.path.append(".")
+
 from numpy import arange
 from pandas import DataFrame, Index
 

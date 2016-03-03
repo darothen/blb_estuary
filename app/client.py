@@ -13,7 +13,8 @@ from bokeh.util.string import encode_utf8
 
 # Set up flask app
 app = flask.Flask("Estuary GUI")
-app.debug = True
+app.debug = False
+HOST = '0.0.0.0'
 PORT = 5000
 
 
@@ -21,9 +22,16 @@ PORT = 5000
 def root():
     """ Returns the web interface to the estuary model """
 
+    bokeh_div = autoload_server(None, session_id=None,
+                                app_path='/app', url='')
+    left, right = bokeh_div.split('src="')
+    bokeh_div = left + 'src="http://yavinprime.mit.edu:5006' + right
+
     html = flask.render_template(
         'app.html',
-        bokeh=autoload_server(None, session_id=None, app_path='/app'),
+        # bokeh=autoload_server(None, session_id=None, 
+        #                       app_path='/app', url=''),
+        bokeh=bokeh_div,
     )
     return encode_utf8(html)
 
@@ -36,4 +44,4 @@ def static_proxy_(path):
 
 if __name__ == "__main__":
     print(__doc__)
-    app.run(port=PORT)
+    app.run(port=PORT, host=HOST)
