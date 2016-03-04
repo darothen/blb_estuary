@@ -84,6 +84,9 @@ top.yaxis.axis_label = "Salinity (g/kg)"
 top.xaxis.axis_label_text_font_size = label_fontsize
 top.yaxis.axis_label_text_font_size = label_fontsize
 
+# overlay volume level chart to salinity
+# TODO: implement
+# top.extra_y_ranges = {"V": Range1d,}
 
 mid = Figure(tools=tools, title=None, x_range=top.x_range,
              toolbar_location=None, **figure_style_kws)
@@ -246,7 +249,7 @@ check_fish = CustomJS(args=dict(source=source), code="""
 ########################################################################
 # Configuration sliders/toggles/buttons
 
-river_flow_slider = Slider(title="River Flow (volume fraction/day)",
+river_flow_slider = Slider(title="River Flow (frac of estuary volume/hour)",
                            value=0.05, start=0., end=0.5, step=0.01,
                            callback=toggle_river)
 river_N_slider = Slider(title="River Nitrate level (µmol/L)",
@@ -254,7 +257,7 @@ river_N_slider = Slider(title="River Nitrate level (µmol/L)",
 gas_exchange_slider = Slider(title="Gas Exchange Rate (m/day)",
                              value=3, start=1, end=5, step=2,
                              callback=toggle_gas)
-productivity_slider = Slider(title="Productivity (factor)",
+productivity_slider = Slider(title="Biological Productivity (factor)",
                              value=1., start=0.5, end=2., step=0.5)
 
 # Potential interactive data table for inclusion
