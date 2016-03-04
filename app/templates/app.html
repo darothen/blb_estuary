@@ -24,7 +24,30 @@
     <hr>
 
     <div class='descr'>
-      <p> Any updated descriptions would go here. </p>
+      <p>This webapp lets you explore how physics, chemistry, and biology combine in a simple model of an estuary. Behind the scenes, we're running a model to evaluate the state of an idealized esturay, based on settings you provide us with through the buttons and sliders on the top-left part of this page. Based on those settings, the schematic below the sliders will update to indicate what sources and sinks you've included in your simulation.</p>
+      <h2 id="running-the-model">Running the Model</h2>
+      <p>You an configure the model inputs and parameters by dragging the sliders above, and you can enable/disable tides using the button underneath the sliders. Here's a quick reference for the parameters we've given you control of:</p>
+      <ol style="list-style-type: decimal">
+      <li><strong>Enable/Disable tides</strong>: Simulate in/out-flow from tides entering/exiting the estuary, parameterizing as the change in tidal height as a function of time.</li>
+      <li><strong>Gas Exchange Rate</strong>: The rate at which oxygen in the estuary is exchanged with the atmosphere. The units here can be considered the &quot;depth&quot; of the estuary which would exchange with the air over the course of a day.</li>
+      <li><strong>Biological Productivity</strong>: This non-dimensional factor controls how &quot;active&quot; the biology in the estuary is, relative to an initial value of &quot;1&quot;. Setting this to different levels simulates how some external factors - such as cloudiness or some other parameter not considered in the model - could influence the estuary biology.</li>
+      <li><strong>River Flow Rate</strong>: What volume of water is entering the estuary from the river. When set to &quot;0&quot;, there is no river attached to the estuary system. This flow rate is expressed as the fraction of the total estuary volume which would be replaced by the flowing river each hour.</li>
+      <li><strong>River Nitrate Level</strong>: The amount of nitrate in the river water flowing into the estuary.</li>
+      </ol>
+      <p>Once you've set the model's conditions, click the &quot;Run Model&quot; button; the plots on the right-hand side above should show the model output for four fields:</p>
+      <ol style="list-style-type: decimal">
+      <li>Salinity</li>
+      <li>Tidal Height</li>
+      <li>Nitrate (nutrient) molar concentration</li>
+      <li>Oxygen molar concentration</li>
+      </ol>
+      <p>We've included two graphical references on the plots. The &quot;gray&quot; box at the beginning of each plot is the model &quot;spin-up&quot; period. During these first two days, we're letting the model reach an equilibrium before we apply your parameter settings. We've grayed out this period so that you're not tempted to interpret some of the weird things that can happen before the model has reached its equilibrium state! Second, we've indicated a threshold for hypoxia (60 µmol/L) on the Oxygen plot. When the curve dips below this threshold, you should investigate!</p>
+      <h2 id="plot-control">Plot Control</h2>
+      <p>Using the tools in the upper-right corner of the top plot, you can investigate the output in more detail. With the tools enabled, hover your mouse over the top plot. Clicking/holding and dragging the mouse left and right will pan the plots forwards and backwards in time. Scrolling the mousewhell will zoom in/out on the date at the center of the plots. Clicking the third button, &quot;reset&quot;, will return the plots to their original state.</p>
+      <p>Finally, if you would like to save the data from the plot, you can do so by clicking on the &quot;Download data&quot; button; this will download the model results in a comma-separated values table, which you can open in Excel to look at and make your own plots.</p>
+      <h2 id="model-code">Model Code</h2>
+      <p>If you're really interested, you can check out the code for this model <a href="https://github.com/darothen/blb_estuary/tree/master/app">on our archive online</a>. The file <code>estuary.py</code> contains the actual estuary model; one level higher in the archive, the script <code>quick.py</code> shows how simple it is to setup and run the model. The rest of the files probably aren't interesting to you; they're just code to make the app you're using work.</p>
+
     </div>
 
     <!--<input checked id="tides" name="s" type="checkbox" />

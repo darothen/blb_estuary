@@ -11,7 +11,7 @@ body {
 h1 {
   margin: 1em 0 0.5em 0;
   font-weight: bold;
-  font-family: 'Orienta', sans-serif;
+  font-family: "Orienta", sans-serif;
   font-size: 30;
   line-height: 40px;
 }
@@ -27,5 +27,11 @@ h1 {
 
 .descr {
   width: 800px;
+}
+.descr h2 {
+  margin: 1em 0 0.5em 0;
+  font-family: "Orienta", sans-serif;
+  font-size: 24;
+  line-height: 30px;
 }
 
