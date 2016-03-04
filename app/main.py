@@ -26,7 +26,7 @@ colors = [
     'MediumSeaGreen', 'OrangeRed', 'DarkViolet'
 ]
 label_fontsize = "10pt"
-tools = "xwheel_zoom,xpan,reset"
+tools = "xwheel_zoom,xpan,reset,save"
 day_range = Range1d(0, model_run_kwargs['t_end']/24.)
 
 # Hardcoded constants
@@ -100,7 +100,7 @@ top.line('day', 'Z', source=source,
          line_color=tc, line_width=2, line_cap='round')
 top.add_layout(tide_axis, "right")
 
-mid = Figure(tools=tools, title=None, x_range=top.x_range,
+mid = Figure(title=None, x_range=top.x_range,
              toolbar_location=None, **figure_style_kws)
 mid.line('day', 'N', source=source,
          line_color=colors[1], line_width=3, line_cap='round')
@@ -110,7 +110,7 @@ mid.xaxis.axis_label_text_font_size = label_fontsize
 mid.yaxis.axis_label_text_font_size = label_fontsize
 
 
-bot = Figure(tools=tools, title=None, x_range=top.x_range,
+bot = Figure(title=None, x_range=top.x_range,
              toolbar_location=None, **figure_style_kws)
 bot.line('day', 'O', source=source,
          line_color=colors[2], line_width=3, line_cap='round')

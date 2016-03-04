@@ -16,8 +16,16 @@ h1 {
   line-height: 40px;
 }
 
-.diagram_container {
+.diagram-container {
   position: absolute;
   top: 500px;
+}
+
+.bokeh-container {
+  width: 800px;
+}
+
+.descr {
+  width: 800px;
 }
 

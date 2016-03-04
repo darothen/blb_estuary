@@ -19,20 +19,18 @@
     <h1>Estuary Model</h1>
     <hr>
 
-    <div id="bokeh_app">
-      {{ bokeh|indent(4)|safe }}
-    </div>
+    {{ bokeh|indent(4)|safe }}
 
     <hr>
 
     <div class='descr'>
-    <p> Any updated descriptions would go here. </p>
+      <p> Any updated descriptions would go here. </p>
     </div>
 
     <!--<input checked id="tides" name="s" type="checkbox" />
     <label for="tides">Enable Tides</label>-->
 
-    <div class="diagram_container">
+    <div class="diagram-container">
       <!-- <svg id="estuary_diagram"  xmlns="http://www.w3.org/2000/svg" version="1.1" width="600" height="300" viewBox="0 0 500 350" xml:space="preserve"> -->
       <svg id="estuary_diagram" viewBox="-10 0 600 350" width="450px"  preserveAspectRatio="xMinYin">
 
