@@ -96,9 +96,12 @@ tide_axis.major_label_text_color = tc
 tide_axis.minor_tick_line_alpha = 0.
 
 top.extra_y_ranges = {"Z": tide_range}
-top.line('day', 'Z', source=source,
-         line_color=tc, line_width=2, line_cap='round')
+# top.line('day', 'Z', source=source,
+         # line_color=tc, line_width=2, line_cap='round')
 top.add_layout(tide_axis, "right")
+top.line('day', 'Z', source=source,
+         line_color=tc, line_width=2, line_cap='round',
+         y_range_name="Z")
 
 mid = Figure(title=None, x_range=top.x_range,
              toolbar_location=None, **figure_style_kws)

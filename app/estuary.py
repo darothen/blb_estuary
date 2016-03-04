@@ -257,7 +257,7 @@ class EstuaryModel(object):
 
 def basic_tidal_flow(t):
     """ Rate of tidal height change in m/s as a function of time in hours. """
-    return 2.*sin(2.*pi*(t / 12.45))
+    return 0.5*sin(2.*pi*(t / 12.45))
 
 
 def quick_plot(results, aspect=4., size=3., palette='Dark2'):
