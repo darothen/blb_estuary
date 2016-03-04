@@ -35,7 +35,7 @@ HYPO_THRESH = 60.
 
 # Figure sizes/styling
 figure_style_kws = dict(
-    plot_width=600, plot_height=250, min_border=0
+    plot_width=600, plot_height=200, min_border=0
 )
 
 

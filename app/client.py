@@ -109,7 +109,7 @@ if __name__ == "__main__":
         bokeh_div = autoload_server(None, **autoload_kws)
         if args.deploy:
             left, right = bokeh_div.split('src="')
-            deployment_src = 'src="http://{:s}":{:d}'.format(
+            deployment_src = 'src="http://{:s}:{:d}'.format(
                 args.host, args.bokeh_port
             )
             bokeh_div = left + deployment_src + right
