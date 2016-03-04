@@ -15,7 +15,7 @@ from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource, Range1d, CustomJS
 from bokeh.models import BoxAnnotation, VBox, HBox, Slider, Toggle, Button
 from bokeh.models import DataTable, TableColumn
-from bokeh.plotting import Figure, gridplot
+from bokeh.plotting import Figure
 
 # Default model settings - can be made accessible to user!
 model_kwargs = dict(V=1e9, z=5., S_ocean=35., N_ocean=20.,
@@ -25,7 +25,7 @@ model_run_kwargs = dict(dt=1.0, t_end=24*42.)
 colors = [
     'MediumSeaGreen', 'OrangeRed', 'DarkViolet'
 ]
-label_fontsize = "14pt"
+label_fontsize = "10pt"
 tools = "xwheel_zoom,xpan,reset"
 day_range = Range1d(0, model_run_kwargs['t_end']/24.)
 
@@ -35,7 +35,7 @@ HYPO_THRESH = 60.
 
 # Figure sizes/styling
 figure_style_kws = dict(
-    plot_width=800, plot_height=200, min_border=0,
+    plot_width=600, plot_height=250, min_border=0
 )
 
 
@@ -122,7 +122,7 @@ for p in [top, mid, bot]:
 
 # Generate multi-panel plot and display
 plots = VBox(top, mid, bot,
-             width=int(figure_style_kws['plot_width']*1.2))
+             width=int(figure_style_kws['plot_width']))
 # plots = gridplot([[top,], [mid,], [bot,]])
 
 
@@ -267,6 +267,7 @@ columns = [
 data_table = DataTable(source=source, columns=columns,
                        width=300, height=600)
 
+
 def toggle_callback(attr):
     if tide_toggle.active:
         # Checked *after* press
@@ -276,7 +277,7 @@ def toggle_callback(attr):
 tide_toggle = Toggle(label="Enable Tides", callback=toggle_ocean)
 tide_toggle.on_click(toggle_callback)
 
-download_button = Button(label="Download plot data", callback=download_data)
+download_button = Button(label="Download data", callback=download_data)
 
 go_button = Button(label="Run model")#, callback=check_fish)
 go_button.on_click(update_plots)
@@ -287,7 +288,7 @@ prods = VBox(gas_exchange_slider, productivity_slider)
 river = VBox(river_flow_slider, river_N_slider)
 tide_run = HBox(tide_toggle, download_button, go_button)
 all_settings = VBox(prods, river, tide_run,
-                    width=600)
+                    width=400)
 
 # Add to current document
 curdoc().add_root(HBox(children=[all_settings, plots]))
