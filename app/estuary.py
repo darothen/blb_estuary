@@ -144,7 +144,7 @@ class EstuaryModel(object):
         #       production code (post-spin-up), this is scaled by the mean
         #       N value from the past 24 hours divided by the ocean N
         #       levels
-        J = P_scale*self.P*(125.*16./154.)*sin(2.*pi*(t+0.75)/24.) # mmol/m2/day
+        J = P_scale*self.P*(125.*16./154.)*sin(2.*pi*(t+0.75)/24. + pi) # mmol/m2/day
         # J /= 24 # day-1 -> h-1
 
         # 4) Current molar concentrations of N and O (to mmol / m3)
