@@ -12,7 +12,7 @@ from copy import copy
 from estuary import EstuaryModel, basic_tidal_flow
 
 from bokeh.io import curdoc
-from bokeh.models import ColumnDataSource, Range1d, CustomJS
+from bokeh.models import ColumnDataSource, Range1d, LinearAxis, CustomJS
 from bokeh.models import BoxAnnotation, VBox, HBox, Slider, Toggle, Button
 from bokeh.models import DataTable, TableColumn
 from bokeh.plotting import Figure
@@ -70,7 +70,7 @@ def run_model(has_tide, river_flow_rate, N_river, G, P):
 ########################################################################
 
 # Construct basic plot architecture
-results = DataFrame({'day': 1, 'S': 0, 'N': 0, 'O': 0, 'V': 1e9},
+results = DataFrame({'day': 1, 'S': 0, 'N': 0, 'O': 0, 'V': 1e9, 'Z': 5.},
                     dtype=float, index=get_timestep_index())
 source = ColumnDataSource(results)
 
@@ -85,8 +85,20 @@ top.xaxis.axis_label_text_font_size = label_fontsize
 top.yaxis.axis_label_text_font_size = label_fontsize
 
 # overlay volume level chart to salinity
-# TODO: implement
-# top.extra_y_ranges = {"V": Range1d,}
+tc = "MediumBlue"  # tide color
+tide_range = Range1d(start=0, end=15)
+tide_axis = LinearAxis(y_range_name="Z")
+tide_axis.axis_label = "Tidal Height (m)"
+tide_axis.axis_label_text_color = tc
+tide_axis.axis_label_text_font_size = label_fontsize
+tide_axis.major_tick_line_color = tc
+tide_axis.major_label_text_color = tc
+tide_axis.minor_tick_line_alpha = 0.
+
+top.extra_y_ranges = {"Z": tide_range}
+top.line('day', 'Z', source=source,
+         line_color=tc, line_width=2, line_cap='round')
+top.add_layout(tide_axis, "right")
 
 mid = Figure(tools=tools, title=None, x_range=top.x_range,
              toolbar_location=None, **figure_style_kws)
@@ -144,6 +156,7 @@ def update_plots():
     # Update internal data handler with latest results/model run output
     source.data = dict(V=results['V'], S=results['S'],
                        N=results['N'], O=results['O'],
+                       Z=results['Z'],
                        day=results['day'])
 
     # title_str = "Estuary"
@@ -265,7 +278,8 @@ columns = [
     TableColumn(field="day", title="Day"),
     TableColumn(field="S", title="Salinity"),
     TableColumn(field="N", title="Nitrate"),
-    TableColumn(field="O", title="Oxygen")
+    TableColumn(field="O", title="Oxygen"),
+    TableColumn(field="Z", title="Tidal Height")
 ]
 data_table = DataTable(source=source, columns=columns,
                        width=300, height=600)

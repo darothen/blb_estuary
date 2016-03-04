@@ -246,6 +246,9 @@ class EstuaryModel(object):
         result.N /= result.V
         result.O /= result.V
 
+        # Add tidal height (meters) to output
+        result['Z'] = result.V/self.estuary_area
+
         # Convert volume to percentage relative to initial
         result.V = 100*(result.V - self.V)/self.V
 
